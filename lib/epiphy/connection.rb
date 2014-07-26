@@ -5,15 +5,12 @@ module Epiphy
     # Create a RethinkDB connection.
     #
     # @param Hash [host, port, db, auth]
+    # @return RethinkDB::Connection a connection to RethinkDB
     #
     # @api public
     # @since 0.0.1
     def self.create(opts = {})
-      begin
-        r.connect opts  
-      rescue err
-        puts err.inspect
-      end
+      r.connect opts  
     end
 
   end
