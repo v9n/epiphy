@@ -5,6 +5,7 @@ source "http://rubygems.org"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
+gem 'rethinkdb', '~> 1.13.0.1'
 gem "lotus-utils", "~> 0.2"
 
 group :development do
