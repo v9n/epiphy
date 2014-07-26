@@ -20,6 +20,40 @@ It implements the following concepts:
 
 Like all the other Lotus components, it can be used as a standalone framework or within a full Rails/Lotus application.
 
+# Example
+
+```ruby
+connection = Epiphy::Connection.create
+adapter    = Epiphy::Adapter::RethinkDB.new connection
+RethinkDB::Repository.configure do |r|
+  r.adapter = adapter 
+end
+
+class Movie
+  include Epiphy::Entity
+  include Epiphy::Entity::Timestamp
+
+  attributes :title, :url
+end
+
+class MovieRepository
+  include Epiphy::Repository  
+end
+
+movie = MovieRepository.find id # Find by id
+
+movie = MovieRepository.first
+movie = MovieRepository.last
+
+movie = Movie.new
+movie.title = "A movie"
+MovieRepository.create movie
+MovieRepository.update movie
+
+
+
+```
+
 # Contributing to epiphy
  
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet.
