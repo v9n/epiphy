@@ -1,29 +1,6 @@
 module Epiphy
   module Adapter
     class Rethinkdb
-      # Execute a ReQL query
-      #
-      # @param object [RethinkDB::ReQL]
-      def query(table, repository)
-        raise ArgumentError, 'Missing query block' unless block_given? 
-        if block_given?
-          rql = get_table(table)
-          yield(rql)
-        end
-        rql.run(@connection)
-      end
-      protected
-
-      # The table name. 
-      def collection
-        params[:controller]
-      end
-
-      def get_table(table = nil)
-        table ||= collection
-        r.db('test').table(table)
-      end
-
       # RethinkDB method related. Should be in its helper
       def insert_object
         get_table.insert(
