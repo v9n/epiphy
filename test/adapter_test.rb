@@ -1,5 +1,4 @@
 require 'helper'
-require 'helper_rethink'
 
 describe Epiphy::Adapter::Rethinkdb do
   let (:a) { Epiphy::Adapter::Rethinkdb}
