@@ -1,6 +1,17 @@
 module Epiphy
   module Adapter
-    class RethinkdbHelper
+    class Rethinkdb
+      # Execute a ReQL query
+      #
+      # @param object [RethinkDB::ReQL]
+      def query(table, repository)
+        raise ArgumentError, 'Missing query block' unless block_given? 
+        if block_given?
+          rql = get_table(table)
+          yield(rql)
+        end
+        rql.run(@connection)
+      end
       protected
 
       # The table name. 
@@ -10,9 +21,8 @@ module Epiphy
 
       def get_table(table = nil)
         table ||= collection
-        @r.table(table)
+        r.db('test').table(table)
       end
-
 
       # RethinkDB method related. Should be in its helper
       def insert_object
@@ -57,9 +67,9 @@ module Epiphy
       def sort(qry)
         ordering = params[:sort].split(",").map do |attr|
           if attr[0] == "-"
-            @r.desc(attr[1..-1].to_sym)
+            r.desc(attr[1..-1].to_sym)
           else
-            @r.asc(attr.to_sym)
+            r.asc(attr.to_sym)
           end
         end
 
