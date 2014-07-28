@@ -1,4 +1,5 @@
 require 'lotus/utils/class_attribute'
+require 'epiphy/repository/configuration'
 
 module Epiphy
   # Mediates between the entities and the persistence layer, by offering an API
@@ -127,34 +128,52 @@ module Epiphy
   # @see Epiphy::Entity
   # @see http://martinfowler.com/eaaCatalog/repository.html
   # @see http://en.wikipedia.org/wiki/Dependency_inversion_principle
-  module Repository
-   
-    # Configuration class for a Repository. 
+  module Repository 
+
+    # Configure repository class by using a block. By default, all Repisitory
+    # will be initlized with same configuration in an instance of the 
+    # `Configuration` # class. 
+    #
+    # Each Repository holds a reference to an `Epiphy::Adapter::Rethinkdb` 
+    # object. This adapter is set when a new Repository is defined.
+    #
+    # @see Epiphy::Repository::Configuration class for configuration option
+    #
+    # The adapter can be chaged later if needed with
+    # `Epiphy::Repository#adapter=` method
+    #
+    # @see Epiphy::Repository#adapter=
     # 
-    # Storing Epiphy::Adapter::RethinkDB instance
+    # @example
+    #   adapter = Epiphy::Adapter::Rethinkdb.new connection
+    #   Epiphy::Repository.configure do |config|
+    #     config.adapter = adapter
+    #   end
+    # @since 0.0.1
     #
-    # @api private
-    # @since 0.0.1 
-    #
-    class Configuration
-      attr_accessor :adapter
-    end
-
     class <<self
-      attr_write :configuration
-
-      def self.configure
+      def configure
         raise(ArgumentError, 'Missing config block') unless block_given?
         @config ||= Configuration.new
         yield(@config)
+        puts @config.adapter
+        puts "set config"
       end
 
-      def self.get_config
+      def get_config
+        puts "get config"
         @config
       end
     end
 
     # Inject the public API into the hosting class.
+    #
+    # Also setup the repository. Collection name, Adapter will be set
+    # automatically at this step. By changing adapter, you can force the
+    # Repository to be read/written from somewhere else. 
+    #
+    # In a master/slave environment, the adapter can be change depend on the
+    # repository. 
     #
     # @since 0.1.0
     #
@@ -165,85 +184,46 @@ module Epiphy
     #     include Epiphy::Repository
     #   end
     def self.included(base)
-      config = self.get_config
+      puts 'class is: ' + self.to_s
+
+      #config = self.get_config
+      config = Epiphy::Repository.get_config
       base.class_eval do
         extend ClassMethods
         include Lotus::Utils::ClassAttribute
+        puts 'class is: con meo' + self.to_s
 
         class_attribute :collection
-        adapter=(config.adapter)
+        self.adapter=(config.adapter)
+        self.collection = get_name if self.collection.nil?
       end
     end
 
     module ClassMethods
       # Assigns an adapter.
       #
-      # Epiphy::Model is shipped with two adapters:
+      # Epiphy::Repository is shipped with an adapters:
       #
-      #   * SqlAdapter
-      #   * MemoryAdapter
+      #   * Rethinkdb
       #
       # @param adapter [Object] an object that implements
       #   `Epiphy::Model::Adapters::Abstract` interface
       #
       # @since 0.1.0
       #
-      # @see Epiphy::Model::Adapters::SqlAdapter
-      # @see Epiphy::Model::Adapters::MemoryAdapter
+      # @see Epiphy::Adapter::Rethinkdb
       #
-      # @example Memory adapter
-      #   require 'epiphy/model'
-      #   require 'epiphy/model/adapters/memory_adapter'
-      #
-      #   mapper = Epiphy::Model::Mapper.new do
-      #     # ...
-      #   end
-      #
-      #   adapter = Epiphy::Model::Adapters::MemoryAdapter.new(mapper)
+      # @example 
       #
       #   class UserRepository
       #     include Epiphy::Repository
       #   end
-      #
+      #   
+      #   # Adapter is set by a shared adapter by default. Unless you want 
+      #   to change, you shoul not need this
+      #   adapter = Epiphy::Adapter::Rethinkdb.new aconnection, adb
       #   UserRepository.adapter = adapter
       #
-      #
-      #
-      # @example SQL adapter with a Sqlite database
-      #   require 'sqlite3'
-      #   require 'epiphy/model'
-      #   require 'epiphy/model/adapters/sql_adapter'
-      #
-      #   mapper = Epiphy::Model::Mapper.new do
-      #     # ...
-      #   end
-      #
-      #   adapter = Epiphy::Model::Adapters::SqlAdapter.new(mapper, 'sqlite://path/to/database.db')
-      #
-      #   class UserRepository
-      #     include Epiphy::Repository
-      #   end
-      #
-      #   UserRepository.adapter = adapter
-      #
-      #
-      #
-      # @example SQL adapter with a Postgres database
-      #   require 'pg'
-      #   require 'epiphy/model'
-      #   require 'epiphy/model/adapters/sql_adapter'
-      #
-      #   mapper = Epiphy::Model::Mapper.new do
-      #     # ...
-      #   end
-      #
-      #   adapter = Epiphy::Model::Adapters::SqlAdapter.new(mapper, 'postgres://host:port/database')
-      #
-      #   class UserRepository
-      #     include Epiphy::Repository
-      #   end
-      #
-      #   UserRepository.adapter = adapter
       def adapter=(adapter)
         @adapter = adapter
       end
@@ -260,7 +240,7 @@ module Epiphy
       # @see Epiphy::Repository#update
       #
       # @example With a non persisted entity
-      #   require 'epiphy/model'
+      #   require 'epiphy'
       #
       #   class ArticleRepository
       #     include Epiphy::Repository
@@ -273,7 +253,7 @@ module Epiphy
       #   article.id # => 23
       #
       # @example With a persisted entity
-      #   require 'epiphy/model'
+      #   require 'epiphy'
       #
       #   class ArticleRepository
       #     include Epiphy::Repository
@@ -593,7 +573,7 @@ module Epiphy
       #     include Epiphy::Repository
       #
       #     def self.most_recent_by_author(author, limit = 8)
-      #       query do
+      #       query do |r|
       #         where(author_id: author.id).
       #           desc(:published_at).
       #           limit(limit)
@@ -663,6 +643,22 @@ module Epiphy
         query.negate!
         query
       end
+
+      # Determine colleciton/table name of this repository. Note that the
+      # repository name has to be the model name, appending Repository
+      #
+      # @return [Symbol] collection name
+      # 
+      # @api public
+      # @since 0.1.0
+      #
+      # @see Epiphy::Adapter::Rethinkdb#get_table
+      #
+      def get_name
+        name = self.to_s.split('::').last
+        name.slice(0, - 'Repository'.length)
+      end
+
     end
   end
 end

@@ -2,7 +2,7 @@ require 'epiphy/version'
 require 'epiphy/entity'
 require 'epiphy/connection'
 require 'epiphy/adapter/rethinkdb'
-#require 'epiphy/repository'
+require 'epiphy/repository'
 
 module Epiphy
   # Model
