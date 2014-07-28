@@ -1,11 +1,12 @@
 # Epiphy
 
-A persistence framework for [RethinkDB](http://rethinkdb.com). The library is used on phim365.today. Its API is based on Lotus::Model.
+A persistence framework for [RethinkDB](http://rethinkdb.com). The library is used on [phim365.today](http://phim365.today). Its API is based on Lotus::Model.
 
-I love Lotus::Model so much because it's leightweight, does the job, no
+I love Lotus::Model so much because it's lightweight, does the job, no
 magic. I also should fork Lotus and add RethinkDB adapter. However, I want
 to learn more Ruby and reinvent the wheel because I didn't know how the
-wheel was created.
+wheel was created. More than that, my bad code will not be able to make
+it to Lotus::Model.
 
 It delivers a convenient public API to execute queries and commands against a database.
 The architecture eases keeping the business logic (entities) separated from details such as persistence or validations.
@@ -14,11 +15,10 @@ It implements the following concepts:
 
   * [Entity](#entities) - An object defined by its identity.
   * [Repository](#repositories) - An object that mediates between the entities and the persistence layer.
-  * [Data Mapper](#data-mapper) - A persistence mapper that keep entities independent from database details.
   * [Adapter](#adapter) – A database adapter.
   * [Query](#query) - An object that represents a database query.
 
-Like all the other Lotus components, it can be used as a standalone framework or within a full Rails/Lotus application.
+`Epiphy` is name after `Epiphyllum`, my spouse's name.
 
 # Install
 
