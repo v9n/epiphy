@@ -5,12 +5,13 @@ RETHINKDB_DB_TEST = 'epiphy_test_v001'
 # Cleanup and Reset the database before testing
 puts "Cleaning the test database"
 
-puts ENV.to_hash
+puts Time.new.asctime
 host = ENV['WERCKER_RETHINKDB_HOST'] || 'localhost'
-
 puts host
 
-connection = r.connect :host => host
+puts Time.new.asctime
+connection = r.connect(:host => host)
+puts Time.new.asctime
 begin
   r.db_drop(RETHINKDB_DB_TEST).run connection
 rescue
