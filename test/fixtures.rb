@@ -4,7 +4,10 @@ include RethinkDB::Shortcuts
 RETHINKDB_DB_TEST = 'epiphy_test_v001'
 # Cleanup and Reset the database before testing
 puts "Cleaning the test database"
-connection = r.connect
+
+host = ENV['WERCKER_RETHINKDB_HOST'] || 'localhost'
+
+connection = r.connect :host => host
 begin
   r.db_drop(RETHINKDB_DB_TEST).run connection
 rescue
