@@ -3,7 +3,7 @@ include RethinkDB::Shortcuts
 
 RETHINKDB_DB_TEST = 'epiphy_test_v001'
 # Cleanup and Reset the database before testing
-puts 'clean up'
+puts "Cleaning the test database"
 connection = r.connect
 begin
   r.db_drop(RETHINKDB_DB_TEST).run connection
@@ -18,4 +18,7 @@ rescue
 ensure
   connection.close
 end
-puts 'Start test'
+
+Epiphy::Repository.configure do |config|
+  config.adapter = Epiphy::Adapter::Rethinkdb.new connection, database: RETHINKDB_DB_TEST
+end
