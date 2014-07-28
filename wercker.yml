@@ -1,4 +1,5 @@
-box: wercker/rvm
+box: epiphy@rethinkdb
+#box: wercker/rvm
 # Build definition
 build:
     # The steps that will be executed on build

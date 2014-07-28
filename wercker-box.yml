@@ -1,6 +1,7 @@
 name: epiphy@rethinkdb
 version: 0.0.1
-inherits: wercker/ubuntu12.04-webessentials@0.0.3
+#inherits: wercker/ubuntu12.04-webessentials@0.0.3
+inherits: wercker/rvm
 type: service
 platform: ubuntu@12.04
 description: wercker box for rethinkdb an open source distributed database
