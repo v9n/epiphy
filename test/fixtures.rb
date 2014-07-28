@@ -8,6 +8,8 @@ puts "Cleaning the test database"
 puts ENV.to_hash
 host = ENV['WERCKER_RETHINKDB_HOST'] || 'localhost'
 
+puts host
+
 connection = r.connect :host => host
 begin
   r.db_drop(RETHINKDB_DB_TEST).run connection
