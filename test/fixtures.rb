@@ -22,12 +22,14 @@ end
 # Create testing table
 # @TODO consider use table create for testing 
 [:users, :article, :customuser, :user, :movie].each do |t|
-  r.table_create(t).run connection
+  r.db(RETHINKDB_DB_TEST).table_create(t).run connection
 end
 
 Epiphy::Repository.configure do |config|
   config.adapter = Epiphy::Adapter::Rethinkdb.new connection, database: RETHINKDB_DB_TEST
-endclass User
+end
+
+class User
   include Epiphy::Entity
   self.attributes = :name, :age
 end

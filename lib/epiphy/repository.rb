@@ -282,7 +282,7 @@ module Epiphy
       #   article = ArticleRepository.find(23)
       #   article.title # => "Launching Epiphy::Model"
       def persist(entity)
-        @adapter.persist(collection, entity)
+        @adapter.persist(collection, entity.document)
       end
 
       # Creates a record in the database for the given entity.
