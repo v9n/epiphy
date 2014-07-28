@@ -7,11 +7,12 @@ puts "Cleaning the test database"
 
 puts Time.new.asctime
 host = ENV['WERCKER_RETHINKDB_HOST'] || 'localhost'
-puts host
+puts "Will work on #{host}"
 
 puts Time.new.asctime
 connection = r.connect(:host => host)
 puts Time.new.asctime
+
 begin
   r.db_drop(RETHINKDB_DB_TEST).run connection
 rescue
@@ -82,3 +83,4 @@ class MovieRepository
   include Epiphy::Repository
   self.collection= :film
 end
+puts "Finish preparing. #{Time.new.asctime}"
