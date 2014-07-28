@@ -25,19 +25,19 @@ describe Epiphy::Repository do
     end
   end
 
-  #describe '.persist' do
-    #describe 'when non persisted' do
-      #before do
-        #UserRepository.persist(user)
-      #end
+  describe '.persist' do
+    describe 'when non persisted' do
+      before do
+        UserRepository.persist(user)
+      end
 
-      #let(:user) { User.new(name: 'S') }
+      let(:user) { User.new(name: 'S') }
 
-      #it 'is created' do
-        #id = UserRepository.last.id
-        #UserRepository.find(id).must_equal(user)
-      #end
-    #end
+      it 'is created' do
+        id = UserRepository.last.id
+        UserRepository.find(id).must_equal(user)
+      end
+    end
 
     #describe 'when already persisted' do
       #before do
@@ -53,7 +53,7 @@ describe Epiphy::Repository do
         #UserRepository.find(id).must_equal(user1)
       #end
     #end
-  #end
+  end
 
   #describe '.create' do
     #before do

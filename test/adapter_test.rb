@@ -43,9 +43,13 @@ describe Epiphy::Adapter::Rethinkdb do
         r.table_drop table
       end
 
-      @adapter.query do |t, r|
-        r.db_drop RETHINKDB_DB_TEST
-      end
+      #@adapter.query do |t, r|
+        #r.db_create RETHINKDB_DB_TEST . "___"
+      #end
+
+      #@adapter.query do |t, r|
+        #r.db_drop RETHINKDB_DB_TEST
+      #end
     end
 
 
