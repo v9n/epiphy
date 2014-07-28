@@ -156,12 +156,9 @@ module Epiphy
         raise(ArgumentError, 'Missing config block') unless block_given?
         @config ||= Configuration.new
         yield(@config)
-        puts @config.adapter
-        puts "set config"
       end
 
       def get_config
-        puts "get config"
         @config
       end
     end
@@ -174,28 +171,45 @@ module Epiphy
     #
     # In a master/slave environment, the adapter can be change depend on the
     # repository. 
+    # 
+    # The name of table to hold this collection in database can be change with 
+    # self.collection= method
     #
     # @since 0.1.0
+    # @see self#collection
     #
     # @example
     #   require 'epiphy/model'
-    #
+    # 
     #   class UserRepository
     #     include Epiphy::Repository
     #   end
+    #
+    #   UserRepository.collection #=> User
+    #
+    #   class MouseRepository
+    #     include Epiphy::Repository
+    #
+    #   end
+    #   MouseRepository.collection = 'Mice'
+    #   MouseRepository.collection #=> Mice
+    #
+    #   class FilmRepository
+    #     include Epiphy::Repository
+    #     collection = 'Movie'
+    #   end
+    #   FilmRepository.collection = 'Movie'
+    #
     def self.included(base)
-      puts 'class is: ' + self.to_s
-
       #config = self.get_config
       config = Epiphy::Repository.get_config
       base.class_eval do
         extend ClassMethods
         include Lotus::Utils::ClassAttribute
-        puts 'class is: con meo' + self.to_s
 
         class_attribute :collection
         self.adapter=(config.adapter)
-        self.collection = get_name if self.collection.nil?
+        self.collection=(get_name) if self.collection.nil?
       end
     end
 
@@ -530,6 +544,22 @@ module Epiphy
         @adapter.clear(collection)
       end
 
+      # Create a collection storage in database.
+      #
+      def create_collection
+        query do |r|
+          r.table_create(self.collection)
+        end
+      end
+
+      # Drop a collection storage in database
+      #
+      def drop_collection
+        query do |r|
+          r.table_drop(self.collection)
+        end
+      end
+
       private
       # Fabricates a query and yields the given block to access the low level
       # APIs exposed by the query itself.
@@ -656,7 +686,11 @@ module Epiphy
       #
       def get_name
         name = self.to_s.split('::').last
-        name.slice(0, - 'Repository'.length)
+        #end = Repository.length + 1
+        if name.nil?
+          return nil
+        end
+        name = name[0..-11].downcase.to_sym
       end
 
     end

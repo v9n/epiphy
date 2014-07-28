@@ -39,3 +39,8 @@ class ArticleRepository
     rank.by_user(user)
   end
 end
+
+class MovieRepository
+  include Epiphy::Repository
+  self.collection= :film
+end
