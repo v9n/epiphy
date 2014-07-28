@@ -1,4 +1,4 @@
-box: epiphy@rethinkdb
+box: kureikain/rvm-rethinkdb@0.1.0
 #box: wercker/rvm
 # Build definition
 build:
