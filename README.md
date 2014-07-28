@@ -1,4 +1,4 @@
-# Epiphy
+# Epiphy [![wercker status](https://app.wercker.com/status/63dd458158948712a03a00d69a96f67b/m "wercker status")](https://app.wercker.com/project/bykey/63dd458158948712a03a00d69a96f67b)
 
 A persistence framework for [RethinkDB](http://rethinkdb.com). The library is used on [phim365.today](http://phim365.today). Its API is based on Lotus::Model.
 

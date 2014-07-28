@@ -25,3 +25,6 @@ build:
         # - script:
         #    name: rspec
         #    code: bundle exec rspec
+        - script:
+            name: Minitest
+            code: rake test    
