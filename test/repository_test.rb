@@ -28,7 +28,8 @@ describe Epiphy::Repository do
   describe '.persist' do
     describe 'when non persisted' do
       before do
-        UserRepository.persist(user)
+        @createdUser = UserRepository.persist(user)
+        puts @createdUser.inspect
       end
 
       let(:user) { User.new(name: 'S') }
