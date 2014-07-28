@@ -20,6 +20,38 @@ It implements the following concepts:
 
 Like all the other Lotus components, it can be used as a standalone framework or within a full Rails/Lotus application.
 
+# Install
+
+```
+gem install epiphy
+```
+
+or add
+
+```
+gem 'epiphy'
+```
+
+to your `Gemfile` if you use Bundle. Run `bundle install`
+
+
+# Testing
+
+`Minitest` is used for testing.
+
+Make sure you have a working RethinkDB with default connection
+information that is localhost, port 28015, without authentication key
+and run
+
+```
+$ bundle install
+$ rake test
+```
+
+A testing database will be created during the testing. The testing data
+will hit your RethinkDB. Depend on your storge system, test can fast or
+slow.
+
 # Example
 
 ```ruby
