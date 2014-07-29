@@ -59,28 +59,28 @@ describe Epiphy::Repository do
     end
   end
 
-  #describe '.create' do
-    #before do
-      #UserRepository.create(user1)
-      #UserRepository.create(user2)
-    #end
+  describe '.create' do
+    before do
+      UserRepository.create(user1)
+      UserRepository.create(user2)
+    end
 
-    #it 'persist entities' do
-      #UserRepository.all.must_equal(users)
-    #end
+    it 'persist entities' do
+      UserRepository.all.must_equal(users)
+    end
 
-    #it 'creates different kind of entities' do
-      #ArticleRepository.create(article1)
-      #ArticleRepository.all.must_equal([article1])
-    #end
+    it 'creates different kind of entities' do
+      ArticleRepository.create(article1)
+      ArticleRepository.all.must_equal([article1])
+    end
 
-    #it 'does nothing when already persisted' do
-      #id = user1.id
+    it 'does nothing when already persisted' do
+      id = user1.id
 
-      #UserRepository.create(user1)
-      #user1.id.must_equal id
-    #end
-  #end
+      UserRepository.create(user1)
+      user1.id.must_equal id
+    end
+  end
 
   describe '.update' do
     before do
@@ -122,24 +122,24 @@ describe Epiphy::Repository do
     end
   end
 
-  #describe '.all' do
-    #describe 'without data' do
-      #it 'returns an empty collection' do
-        #UserRepository.all.must_be_empty
-      #end
-    #end
+  describe '.all' do
+    describe 'without data' do
+      it 'returns an empty collection' do
+        UserRepository.all.must_be_empty
+      end
+    end
 
-    #describe 'with data' do
-      #before do
-        #UserRepository.create(user1)
-        #UserRepository.create(user2)
-      #end
+    describe 'with data' do
+      before do
+        UserRepository.create(user1)
+        UserRepository.create(user2)
+      end
 
-      #it 'returns all the entities' do
-        #UserRepository.all.must_equal(users)
-      #end
-    #end
-  #end
+      it 'returns all the entities' do
+        UserRepository.all.must_equal(users)
+      end
+    end
+  end
 
   #describe '.find' do
     #describe 'without data' do
