@@ -175,8 +175,12 @@ module Epiphy
       def all(collection)
         # TODO consider to make this lazy (aka remove #all)
         #query(collection).all
-        query table: collection do |r|
-          r
+        begin 
+          query table: collection do |r|
+            r
+          end
+        rescue
+          return false
         end
       end
 
@@ -198,6 +202,28 @@ module Epiphy
         #rescue
         #end
         result
+      end
+
+      # Remove the record from the given collection, with the given id
+      # 
+      # @param collection [Symbol] the target collection
+      # @param id [Object] the identity of the object
+      #
+      # @return [Object] the entity
+      #
+      # @api private
+      # @since 0.1.0
+      def delete(collection, id)
+        begin
+          result = query table: collection do |r|
+            r.get(id).delete()
+          end
+          if result["errors"] == 0
+            return result["deleted"]
+          end
+        rescue
+          return false
+        end
       end
 
       # Returns the first record in the given collection.

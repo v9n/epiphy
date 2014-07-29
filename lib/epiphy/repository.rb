@@ -434,7 +434,10 @@ module Epiphy
       #
       #   ArticleRepository.all # => [ #<Article:0x007f9b19a60098> ]
       def all
-        @adapter.all(collection)
+        all_row = @adapter.all(collection)
+        all_row.map! do |e|
+          to_entity(e)
+        end
       end
 
       # Finds an entity by its identity.

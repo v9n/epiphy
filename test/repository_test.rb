@@ -29,7 +29,6 @@ describe Epiphy::Repository do
     describe 'when non persisted' do
       before do
         @createdUser = UserRepository.persist(user)
-        puts @createdUser.inspect
       end
 
       let(:user) { User.new(name: 'S') }
@@ -83,44 +82,44 @@ describe Epiphy::Repository do
     #end
   #end
 
-  #describe '.update' do
-    #before do
-      #UserRepository.create(user1)
-    #end
+  describe '.update' do
+    before do
+      UserRepository.create(user1)
+    end
 
-    #let(:id) { user1.id }
+    let(:id) { user1.id }
 
-    #it 'updates entities' do
-      #user = User.new(name: 'Luca')
-      #user.id = id
+    it 'updates entities' do
+      user = User.new(name: 'Luca')
+      user.id = id
 
-      #UserRepository.update(user)
+      UserRepository.update(user)
 
-      #u = UserRepository.find(id)
-      #u.name.must_equal('Luca')
-    #end
+      u = UserRepository.find(id)
+      u.name.must_equal('Luca')
+    end
 
-    #it 'raises an error when not persisted' do
-      #-> { UserRepository.update(user2) }.must_raise(Epiphy::Model::NonPersistedEntityError)
-    #end
-  #end
+    it 'raises an error when not persisted' do
+      -> { UserRepository.update(user2) }.must_raise(Epiphy::Model::NonPersistedEntityError)
+    end
+  end
 
-  #describe '.delete' do
-    #before do
-      #UserRepository.create(user)
-      #UserRepository.delete(user)
-    #end
+  describe '.delete' do
+    before do
+      UserRepository.create(user)
+      UserRepository.delete(user)
+    end
 
-    #let(:user) { User.new(name: 'D') }
+    let(:user) { User.new(name: 'D') }
 
-    #it 'delete entity' do
-      #UserRepository.all.wont_include(user)
-    #end
+    it 'delete entity' do
+      UserRepository.all.wont_include(user)
+    end
 
-    #it 'raises error when the given entity is not persisted' do
-      #-> { UserRepository.delete(user2) }.must_raise(Epiphy::Model::NonPersistedEntityError)
-    #end
-  #end
+    it 'raises error when the given entity is not persisted' do
+      -> { UserRepository.delete(user2) }.must_raise(Epiphy::Model::NonPersistedEntityError)
+    end
+  end
 
   #describe '.all' do
     #describe 'without data' do
