@@ -113,7 +113,8 @@ describe Epiphy::Repository do
     let(:user) { User.new(name: 'D') }
 
     it 'delete entity' do
-      UserRepository.all.wont_include(user)
+      # Don't use to_a on big table
+      UserRepository.all.to_a.wont_include(user)
     end
 
     it 'raises error when the given entity is not persisted' do
