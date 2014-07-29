@@ -145,15 +145,7 @@ module Epiphy
     def ==(other)
       self.class == other.class &&
          self.id == other.id
-    end
-
-    # Convert all value of the entity into a document
-    #
-    def document
-      document = {}
-      instance_variables.each {|var| document[var.to_s.delete("@")] = self.instance_variable_get(var) }
-      document
-    end
+    end 
 
   end
 end

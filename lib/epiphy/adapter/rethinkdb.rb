@@ -132,9 +132,16 @@ module Epiphy
       # @api private
       # @since 0.0.1
       def create(collection, entity)
-        puts entity.inspect
-        result = query table: collection do |r|
-          r.insert(entity)
+        begin
+          result = query table: collection do |r|
+            r.insert(entity)
+          end
+        rescue 
+          return false
+        end
+        
+        if result["inserted"]==1
+          result["generated_keys"].first
         end
       end
 
@@ -146,9 +153,14 @@ module Epiphy
       # @api private
       # @since 0.0.1
       def update(collection, entity)
-        result = query table: collection do |r|
-          r.get(entity[id]).update(entity)
+        begin
+          result = query table: collection do |r|
+            r.get(entity["id"]).update(entity)
+          end
+        rescue
+          return false
         end
+        return result["replaced"]
       end
 
 
@@ -179,9 +191,13 @@ module Epiphy
       # @api private
       # @since 0.1.0
       def find(collection, id)
-        query table:collection do |r|
-          r.get(id)
-        end
+        #begin
+          result = query table: collection do |r|
+            r.get(id)
+          end
+        #rescue
+        #end
+        result
       end
 
       # Returns the first record in the given collection.

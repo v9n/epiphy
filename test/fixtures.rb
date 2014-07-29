@@ -7,11 +7,15 @@ puts "Cleaning the test database"
 
 puts Time.new.asctime
 host = ENV['WERCKER_RETHINKDB_HOST'] || 'localhost'
-puts "Will work on #{host}"
+if host=='localhost'
+  puts "Local test. Will connect to local rethink"
+else
+  puts "CI detected. Will connect to #{host}"
+end
 
-puts Time.new.asctime
+puts 'Connect to Rethink ' + Time.new.asctime
 connection = r.connect(:host => host)
-puts Time.new.asctime
+puts 'Succesfully connect at ' + Time.new.asctime
 
 begin
   r.db_drop(RETHINKDB_DB_TEST).run connection

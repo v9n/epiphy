@@ -35,25 +35,29 @@ describe Epiphy::Repository do
       let(:user) { User.new(name: 'S') }
 
       it 'is created' do
-        id = UserRepository.last.id
+        id  = @createdUser
+        # mocking id of new created object for comparing
+        # we only need to compare the value, the id isn't need to compare
+        user.id = id
         UserRepository.find(id).must_equal(user)
       end
     end
 
-    #describe 'when already persisted' do
-      #before do
-        #UserRepository.create(user1)
+    describe 'when already persisted' do
+      before do
+        UserRepository.create(user1)
 
-        #user1.name = 'Luke'
-        #UserRepository.persist(user1)
-      #end
+        user1.name = 'Luke'
+        user1.age = 29
+        UserRepository.persist(user1)
+      end
 
-      #let(:id) { user1.id }
+      let(:id) { user1.id }
 
-      #it 'is updated' do
-        #UserRepository.find(id).must_equal(user1)
-      #end
-    #end
+      it 'is updated' do
+        UserRepository.find(id).must_equal(user1)
+      end
+    end
   end
 
   #describe '.create' do

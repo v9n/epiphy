@@ -282,7 +282,7 @@ module Epiphy
       #   article = ArticleRepository.find(23)
       #   article.title # => "Launching Epiphy::Model"
       def persist(entity)
-        @adapter.persist(collection, entity.document)
+        @adapter.persist(collection, to_document(entity))
       end
 
       # Creates a record in the database for the given entity.
@@ -314,10 +314,9 @@ module Epiphy
       #   ArticleRepository.create(article) # no-op
       def create(entity)
         unless entity.id
-          @adapter.create(collection, entity)
+          result = @adapter.create(collection, to_document(entity))
+          entity.id = result
         end
-
-        entity
       end
 
       # Updates a record in the database corresponding to the given entity.
@@ -364,12 +363,10 @@ module Epiphy
       #   ArticleRepository.update(article) # raises Epiphy::Model::NonPersistedEntityError
       def update(entity)
         if entity.id
-          @adapter.update(collection, entity)
+          @adapter.update(collection, to_document(entity))
         else
           raise Epiphy::Model::NonPersistedEntityError
         end
-
-        entity
       end
 
       # Deletes a record in the database corresponding to the given entity.
@@ -463,9 +460,10 @@ module Epiphy
       #
       #   ArticleRepository.find(9) # => raises Epiphy::Model::EntityNotFound
       def find(id)
-        @adapter.find(collection, id).tap do |record|
+        result = @adapter.find(collection, id).tap do |record|
           raise Epiphy::Model::EntityNotFound.new unless record
         end
+        to_entity(result)
       end
 
       # Returns the first entity in the database.
@@ -683,7 +681,6 @@ module Epiphy
       # @since 0.1.0
       #
       # @see Epiphy::Adapter::Rethinkdb#get_table
-      #
       def get_name
         name = self.to_s.split('::').last
         #end = Repository.length + 1
@@ -691,6 +688,56 @@ module Epiphy
           return nil
         end
         name = name[0..-11].downcase.to_sym
+      end
+      
+      # Determine entity name for this repository
+      # @return [String] entity name
+      #
+      # @api public
+      # @since 0.1.0
+      #
+      # @see self#get_name
+      def entity_name
+        name = self.to_s.split('::').last
+        if name.nil?
+          return nil
+        end
+        name[0..-11]
+      end
+      
+      # Convert a hash into the entity object. 
+      #
+      # Note that we require a Entity class same name with Repository class,
+      # only different is the suffix Repository.
+      #
+      # @param [Hash] value object  
+      # @return [Epiphy::Entity] Entity  
+      # @api public
+      # @since 0.1.0
+      def to_entity ahash
+        begin 
+          e = Object.const_get('User').new
+          ahash.each do |k,v|
+            e.send("#{k}=", v)
+          end
+        rescue
+          raise Epiphy::Model::EntityClassNotFound
+        end
+        e
+      end
+
+      # Convert all value of the entity into a document
+      #
+      # @param [Epiphy::Entity] Entity
+      # @return [Hash] hash object of entity value, except the nil value
+      # 
+      # @api public
+      # @since 0.1.0
+      #
+      def to_document entity
+        document = {}
+        entity.instance_variables.each {|var| document[var.to_s.delete("@")] = entity.instance_variable_get(var) unless entity.instance_variable_get(var).nil? }
+        document
       end
 
     end

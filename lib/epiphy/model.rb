@@ -17,6 +17,10 @@ module Epiphy
     class EntityNotFound < ::StandardError
     end
 
+    class EntityClassNotFound < ::StandardError
+
+    end
+
     # Error for non persisted entity
     # It's raised when we try to update or delete a non persisted entity.
     #
