@@ -1,5 +1,6 @@
 require 'lotus/utils/class_attribute'
 require 'epiphy/repository/configuration'
+require 'epiphy/repository/cursor'
 
 module Epiphy
   # Mediates between the entities and the persistence layer, by offering an API
@@ -435,9 +436,10 @@ module Epiphy
       #   ArticleRepository.all # => [ #<Article:0x007f9b19a60098> ]
       def all
         all_row = @adapter.all(collection)
-        all_row.map! do |e|
-          to_entity(e)
+        cursor = Epiphy::Repository::Cursor.new all_row do |item|
+          to_entity(item)
         end
+        cursor
       end
 
       # Finds an entity by its identity.
