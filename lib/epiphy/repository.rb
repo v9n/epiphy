@@ -539,7 +539,7 @@ module Epiphy
 
       # Deletes all the records from the current collection.
       #
-      # If used with a SQL database it executes a `DELETE FROM <table>`.
+      # Execute a `r.table().delete()` on RethinkDB level.
       #
       # @since 0.1.0
       #

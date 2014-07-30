@@ -244,26 +244,26 @@ describe Epiphy::Repository do
     #end
   #end
 
-  #describe '.clear' do
-    #describe 'without data' do
-      #it 'removes all the records' do
-        #UserRepository.clear
-        #UserRepository.all.must_be_empty
-      #end
-    #end
+  describe '.clear' do
+    describe 'without data' do
+      it 'removes all the records' do
+        UserRepository.clear
+        UserRepository.all.must_be_empty
+      end
+    end
 
-    #describe 'with data' do
-      #before do
-        #UserRepository.create(user1)
-        #UserRepository.create(user2)
-      #end
+    describe 'with data' do
+      before do
+        UserRepository.create(user1)
+        UserRepository.create(user2)
+      end
 
-      #it 'removes all the records' do
-        #UserRepository.clear
-        #UserRepository.all.must_be_empty
-      #end
-    #end
-  #end
+      it 'removes all the records' do
+        UserRepository.clear
+        UserRepository.all.must_be_empty
+      end
+    end
+  end
 
   #describe 'querying' do
     #before do
