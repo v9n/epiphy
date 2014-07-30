@@ -265,18 +265,18 @@ describe Epiphy::Repository do
     end
   end
 
-  #describe 'querying' do
-    #before do
-      #UserRepository.create(user1)
-      #ArticleRepository.create(article1)
-      #ArticleRepository.create(article2)
-      #ArticleRepository.create(article3)
-    #end
+  describe 'querying' do
+    before do
+      UserRepository.create(user1)
+      ArticleRepository.create(article1)
+      ArticleRepository.create(article2)
+      ArticleRepository.create(article3)
+    end
 
-    #it 'defines custom finders' do
-      #actual = ArticleRepository.by_user(user1)
-      #actual.all.must_equal [article1, article2]
-    #end
+    it 'defines custom finders' do
+      actual = ArticleRepository.by_user(user1)
+      actual.all.must_equal [article1, article2]
+    end
 
     #if adapter_name == :sql
       #it 'combines queries' do
@@ -289,5 +289,5 @@ describe Epiphy::Repository do
         #actual.all.must_equal []
       #end
     #end
-  #end
+  end
 end

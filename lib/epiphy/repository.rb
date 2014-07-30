@@ -553,23 +553,7 @@ module Epiphy
       #   ArticleRepository.clear # deletes all the records
       def clear
         @adapter.clear(collection)
-      end
-
-      # Create a collection storage in database.
-      #
-      def create_collection
-        query do |r|
-          r.table_create(self.collection)
-        end
-      end
-
-      # Drop a collection storage in database
-      #
-      def drop_collection
-        query do |r|
-          r.table_drop(self.collection)
-        end
-      end
+      end 
 
       private
       # Fabricates a query and yields the given block to access the low level
@@ -647,7 +631,7 @@ module Epiphy
       #     end
       #   end
       def query(&blk)
-        @adapter.query(collection, self, &blk)
+        @adapter.query(table: collection, &blk)
       end
 
       # Negates the filtering conditions of a given query with the logical

@@ -69,7 +69,7 @@ class ArticleRepository
   end
 
   def self.by_user(user)
-    query do
+    query do |r|
       where(user_id: user.id)
     end
   end

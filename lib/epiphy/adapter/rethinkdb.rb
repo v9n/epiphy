@@ -1,9 +1,12 @@
 require 'epiphy/adapter/error'
-#require 'epiphy/adapter/helper'
+require 'epiphy/adapter/helper'
+
 module Epiphy
   module Adapter
     class Rethinkdb
       include RethinkDB::Shortcuts
+      include Epiphy::Adapter::Helper
+
       # Create an adapter object, with the option to pass a connection
       # object as dependency.
       #
@@ -102,6 +105,7 @@ module Epiphy
         raise ArgumentError, 'Missing query block' unless block_given? 
         if block_given?
           rql = get_table(table, database)
+          @current_rql = rql
           rql = yield(rql, r)
         end
         rql.run(@connection)
@@ -277,14 +281,6 @@ module Epiphy
       end
 
       private
-      def _collection(name)
-        raise NotImplementedError
-      end
-
-      def _mapped_collection(name)
-        @mapper.collection(name)
-      end
-
       def _find(collection, id)
         identity = _identity(collection)
         query(collection).where(identity => _id(collection, identity, id))
