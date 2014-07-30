@@ -158,58 +158,53 @@ describe Epiphy::Repository do
     end
   end
 
-  #describe '.find' do
-    #describe 'without data' do
-      #it 'raises error' do
-        #-> { UserRepository.find(1) }.must_raise(Epiphy::Model::EntityNotFound)
-      #end
-    #end
+  describe '.find' do
+    describe 'without data' do
+      it 'raises error' do
+        -> { UserRepository.find(1) }.must_raise(Epiphy::Model::EntityNotFound)
+      end
+    end
 
-    #describe 'with data' do
-      #before do
-        #TestPrimaryKey = Struct.new(:id) do
-          #def to_int
-            #id
-          #end
-        #end
+    describe 'with data' do
+      before do
+        TestPrimaryKey = Struct.new(:id) do
+          def to_s
+            id
+          end
+        end
 
-        #UserRepository.create(user1)
-        #UserRepository.create(user2)
+        UserRepository.create(user1)
+        UserRepository.create(user2)
 
-        #ArticleRepository.create(article1)
-      #end
+        ArticleRepository.create(article1)
+      end
 
-      #after do
-        #Object.send(:remove_const, :TestPrimaryKey)
-      #end
+      after do
+        Object.send(:remove_const, :TestPrimaryKey)
+      end
 
-      #it 'returns the entity associated with the given id' do
-        #UserRepository.find(user1.id).must_equal(user1)
-      #end
+      it 'returns the entity associated with the given id' do
+        UserRepository.find(user1.id).must_equal(user1)
+      end
 
-      #it 'accepts a string as argument' do
-        #UserRepository.find(user2.id.to_s).must_equal(user2)
-      #end
+      it 'accepts a string as argument' do
+        UserRepository.find(user2.id.to_s).must_equal(user2)
+      end
 
-      #it 'accepts an object that can be coerced to integer' do
-        #id = TestPrimaryKey.new(user2.id)
-        #UserRepository.find(id).must_equal(user2)
-      #end
-
-      #it 'coerces attributes as indicated by the mapper' do
-        #result = ArticleRepository.find(article1.id)
-        #result.comments_count.must_be_kind_of(Integer)
-      #end
+      it 'accepts an object that can be force to a String' do
+        id = TestPrimaryKey.new(user2.id)
+        UserRepository.find(id).must_equal(user2)
+      end
 
       #it "doesn't assign a value to unmapped attributes" do
         #ArticleRepository.find(article1.id).unmapped_attribute.must_be_nil
       #end
 
-      #it "raises error when the given id isn't associated with any entity" do
-        #-> { UserRepository.find(1_000_000) }.must_raise(Epiphy::Model::EntityNotFound)
-      #end
-    #end
-  #end
+      it "raises error when the given id isn't associated with any entity" do
+        -> { UserRepository.find(1_000_000) }.must_raise(Epiphy::Model::EntityNotFound)
+      end
+    end
+  end
 
   #describe '.first' do
     #describe 'without data' do

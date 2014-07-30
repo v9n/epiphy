@@ -465,7 +465,15 @@ module Epiphy
       #
       #   ArticleRepository.find(9) # => raises Epiphy::Model::EntityNotFound
       def find(id)
-        result = @adapter.find(collection, id).tap do |record|
+        entity_id = id
+        if !id.is_a? String
+          raise Epiphy::Model::EntityIdNotFound, "Missing entity id" if !id.respond_to?(:to_s)
+          entity_id = id.to_s
+        end
+        #if !id.is_a? String
+          #entity_id = id.to_i
+        #end
+        result = @adapter.find(collection, entity_id).tap do |record|
           raise Epiphy::Model::EntityNotFound.new unless record
         end
         to_entity(result)
