@@ -221,8 +221,30 @@ module Epiphy
           if result["errors"] == 0
             return result["deleted"]
           end
+          return false
         rescue
           return false
+        end
+      end
+
+      # Delete all records from the table
+      # 
+      # @param collection [Symbol] the target collection
+      # @return how many entry we removed
+      #
+      # @since 0.0.1
+      # @api private
+      def clear(collection)
+        begin
+          result = query table: collection do |r|
+            r.delete()
+          end
+          if result["errors"] == 0
+            return result['deleted']
+          end
+          return false
+        rescue 
+          return false 
         end
       end
 

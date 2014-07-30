@@ -439,7 +439,7 @@ module Epiphy
         cursor = Epiphy::Repository::Cursor.new all_row do |item|
           to_entity(item)
         end
-        cursor
+        cursor.to_a
       end
 
       # Finds an entity by its identity.
@@ -721,7 +721,8 @@ module Epiphy
       # @since 0.1.0
       def to_entity ahash
         begin 
-          e = Object.const_get('User').new
+          name = entity_name
+          e = Object.const_get(name).new
           ahash.each do |k,v|
             e.send("#{k}=", v)
           end
