@@ -7,6 +7,11 @@ module Epiphy
     # hash into Entity object. Instead, we will use aan enumerable and the
     # Repository leverage it to convert the hash to entity object.
     #
+    # An cursor can be convert to an arrya with `.to_a` method
+    #
+    # @see Epiphy::Repository#all
+    # @see Epiphy::Adapter::Rethinkdb#all
+    #
     # @example
     #   cursor = r.table()...
     #   all = Epiphy::Repository::Cursor.new(cursor) do |item|
