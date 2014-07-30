@@ -412,7 +412,7 @@ module Epiphy
       #   ArticleRepository.delete(article) # raises Epiphy::Model::NonPersistedEntityError
       def delete(entity)
         if entity.id
-          @adapter.delete(collection, entity)
+          @adapter.delete(collection, entity.id)
         else
           raise Epiphy::Model::NonPersistedEntityError
         end
