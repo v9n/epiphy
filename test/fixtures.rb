@@ -48,7 +48,7 @@ end
 
 class Article
   include Epiphy::Entity
-  self.attributes = :user_id, :unmapped_attribute, :title, :comments_count
+  self.attributes = :user_id, :unmapped_attribute, :title, :comments_count, :rank
 end
 
 class CustomUserRepository

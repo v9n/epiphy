@@ -282,25 +282,14 @@ describe Epiphy::Repository do
 
     #it 'return a single entity for corresponding query' do
     it 'return an array of Entity' do
-      highest_article = Article.new title: 'test', rank: 99999
-      second_article  = Article.new title: 'test', rank: 99998
+      highest_article = Article.new title: 'test highest', rank: 99999
+      second_article  = Article.new title: 'test second', rank: 99998
       ArticleRepository.create highest_article
       ArticleRepository.create second_article
       actual = ArticleRepository.highest_rank
       actual.must_equal [highest_article]
     end
 
-    #if adapter_name == :sql
-      #it 'combines queries' do
-        #actual = ArticleRepository.rank_by_user(user1)
-        #actual.all.must_equal [article2, article1]
-      #end
-
-      #it 'negates a query' do
-        #actual = ArticleRepository.not_by_user(user1)
-        #actual.all.must_equal []
-      #end
-    #end
   end
 
   describe 'find_by' do

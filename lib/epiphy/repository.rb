@@ -597,7 +597,11 @@ module Epiphy
       # entity class or not. 
       #       
       # @param blk [Proc] a block of code that is executed in the context of a
-      #   query
+      #   query.
+      #   The block will be passed two parameters. First parameter is the `reql`
+      #   which is building. the second parameter is th `r` top name space of
+      #   RethinkDB. By doing this, Repository doesn't have to include
+      #   RethinkDB::Shortcuts
       # 
       # @return a query, the type depends on the current adapter
       #
@@ -663,7 +667,6 @@ module Epiphy
         if result.is_a? Hash
           return to_entity(result)
         end
-        puts result.class
         result
       end
       
