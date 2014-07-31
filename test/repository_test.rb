@@ -275,7 +275,18 @@ describe Epiphy::Repository do
 
     it 'defines custom finders' do
       actual = ArticleRepository.by_user(user1)
-      actual.all.must_equal [article1, article2]
+      actual.each do |i|
+        [article1, article2].must_include i
+      end
+    end
+
+    it 'return a single entity for corresponding query' do
+      highest_article = Article.new title: 'test', rank: 99999
+      second_article  = Article.new title: 'test', rank: 99998
+      ArticleRepository.create highest_article
+      ArticleRepository.create second_article
+      actual = ArticleRepository.highest_rank
+      actual.must_equal highest_article
     end
 
     #if adapter_name == :sql
@@ -290,4 +301,29 @@ describe Epiphy::Repository do
       #end
     #end
   end
+
+  describe 'find_by' do
+    before do
+      UserRepository.create(user1)
+    end
+
+    it 'find the entity with a field' do
+      actual = UserRepository.find_by(name: user1.name)
+      actual.name.must_equal user1.name  
+    end
+
+  end
+
+  describe 'count' do
+    before do
+      UserRepository.create(user1)
+      UserRepository.create(user2)
+      UserRepository.create(User.new(:age =>25, :name => 'K'))
+    end
+    
+    it 'tell us the collection length' do
+      UserRepository.count.must_equal 3
+    end
+  end
+
 end

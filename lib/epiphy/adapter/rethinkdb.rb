@@ -1,12 +1,9 @@
 require 'epiphy/adapter/error'
-require 'epiphy/adapter/helper'
 
 module Epiphy
   module Adapter
     class Rethinkdb
       include RethinkDB::Shortcuts
-      include Epiphy::Adapter::Helper
-
       # Create an adapter object, with the option to pass a connection
       # object as dependency.
       #
@@ -183,8 +180,31 @@ module Epiphy
           query table: collection do |r|
             r
           end
-        rescue
-          return false
+        rescue RethinkDB::RqlRuntimeError => e
+          raise Epiphy::Model::RuntimeError, e.message
+        rescue Exception =>e
+          raise Epiphy::Model::RuntimeError, e.message
+        end
+      end
+
+      # Count entity in table
+      #
+      # @param collection [Symbol] the target collection (it must be mapped).
+      #
+      # @return [Integer] How many record?
+      #
+      # @api private
+      # @since 0.2.0
+      def count(collection)
+        # TODO consider to make this lazy (aka remove #all)
+        begin 
+          query table: collection do |r|
+            r.count
+          end
+        rescue RethinkDB::RqlRuntimeError => e
+          raise Epiphy::Model::RuntimeError, e.message
+        rescue Exception =>e
+          raise Epiphy::Model::RuntimeError, e.message
         end
       end
 

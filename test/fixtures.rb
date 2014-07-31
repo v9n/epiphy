@@ -63,14 +63,20 @@ class ArticleRepository
   include Epiphy::Repository
 
   def self.rank
-    query do
-      desc(:comments_count)
+    query do |r|
+      #r.oreder
+    end
+  end
+
+  def highest_rank
+    query do |r|
+      r.order_by(r.desc('rank')).limit(1)
     end
   end
 
   def self.by_user(user)
     query do |r|
-      where(user_id: user.id)
+      r.filter({user_id: user.id})
     end
   end
 
