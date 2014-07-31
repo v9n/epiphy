@@ -206,24 +206,24 @@ describe Epiphy::Repository do
     end
   end
 
-  #describe '.first' do
-    #describe 'without data' do
-      #it 'returns nil' do
-        #UserRepository.first.must_be_nil
-      #end
-    #end
+  describe '.first' do
+    describe 'without data' do
+      it 'returns nil' do
+        UserRepository.first.must_be_nil
+      end
+    end
 
-    #describe 'with data' do
-      #before do
-        #UserRepository.create(user1)
-        #UserRepository.create(user3)
-      #end
+    describe 'with data' do
+      before do
+        UserRepository.create(user1)
+        UserRepository.create(user3)
+      end
 
-      #it 'returns first record' do
-        #UserRepository.first.must_equal(user1)
-      #end
-    #end
-  #end
+      it 'returns first record' do
+        UserRepository.first.must_equal(user1)
+      end
+    end
+  end
 
   #describe '.last' do
     #describe 'without data' do

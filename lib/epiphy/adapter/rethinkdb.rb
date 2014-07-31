@@ -267,8 +267,8 @@ module Epiphy
             return result['deleted']
           end
           return false
-        rescue 
-          return false 
+        rescue RethinkDB::RqlRuntimeError => e
+          raise Epiphy::Model::RuntimeError, e.message
         end
       end
 
@@ -281,9 +281,13 @@ module Epiphy
       # @api private
       # @since 0.1.0
       def first(collection)
-        _first(
-          query(collection).asc(_identity(collection))
-        )
+        begin
+          result = query table: collection do |r|
+            r.nth(0)
+          end
+        rescue RethinkDB::RqlRuntimeError => e
+          raise Epiphy::Model::RuntimeError, e.message
+        end
       end
 
       # Returns the last record in the given collection.
@@ -295,9 +299,13 @@ module Epiphy
       # @api private
       # @since 0.1.0
       def last(collection)
-        _first(
-          query(collection).desc(_identity(collection))
-        )
+        begin
+          result = query table: collection do |r|
+            r.nth(0)
+          end
+        rescue RethinkDB::RqlRuntimeError => e
+          raise Epiphy::Model::RuntimeError, e.message
+        end
       end
 
       private
