@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = "A simple ORM for RethinkDB. Stealing Lotus::Model to learn how to write an ORM and API design"
   s.authors     = ["Vinh"]
   s.email       = 'kurei@axcoto.com'
-  s.homepage    = 'http://rubygems.org/gems/hola'
+  s.homepage    = 'http://rubygems.org/gems/epiphy'
   s.license     = 'MIT'
 
   s.files         = `git ls-files -z -- lib/* CHANGELOG.md EXAMPLE.md LICENSE.md README.md lotus-model.gemspec`.split("\x0")
