@@ -507,7 +507,12 @@ module Epiphy
       #
       #   ArticleRepository.first # => nil
       def first
-        @adapter.first(collection)
+        result = @adapter.first(collection)
+        if result
+          to_entity result
+        else
+          result
+        end
       end
 
       # Returns the last entity in the database.
