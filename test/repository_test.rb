@@ -215,7 +215,7 @@ describe Epiphy::Repository do
   describe '.first' do
     describe 'without data' do
       it 'returns nil' do
-        UserRepository.first(:name).must_be_nil
+        UserRepository.first("name").must_be_nil
       end
     end
 
@@ -226,7 +226,7 @@ describe Epiphy::Repository do
       end
 
       it 'returns first record' do
-        UserRepository.first(:name).must_equal(user1)
+        UserRepository.first("name").must_equal(user3)
       end
     end
   end
@@ -234,7 +234,7 @@ describe Epiphy::Repository do
   describe '.last' do
     describe 'without data' do
       it 'returns nil' do
-        UserRepository.last(:name).must_be_nil
+        UserRepository.last("name").must_be_nil
       end
     end
 
