@@ -3,6 +3,7 @@ require 'helper'
 describe Epiphy::Repository do
   let(:user1) { User.new(name: 'L') }
   let(:user2) { User.new(name: 'MG') }
+  let(:user3) { User.new(name: 'K') }
   let(:users) { [user1, user2] }
 
   let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Epiphy::Model', comments_count: '23') }
@@ -78,12 +79,17 @@ describe Epiphy::Repository do
       ArticleRepository.all.must_equal([article1])
     end
 
-    it 'does nothing when already persisted' do
-      id = user1.id
-
+    it 'create entity with assigned id' do
+      id = 1999
+      user1.id = id 
       UserRepository.create(user1)
       user1.id.must_equal id
     end
+
+    it 'raise an error if the entity existed' do
+      -> {UserRepository.create(user1)}.must_raise Epiphy::Model::EntityExisted
+    end
+
   end
 
   describe '.update' do
@@ -209,7 +215,7 @@ describe Epiphy::Repository do
   describe '.first' do
     describe 'without data' do
       it 'returns nil' do
-        UserRepository.first.must_be_nil
+        UserRepository.first(:name).must_be_nil
       end
     end
 
@@ -220,29 +226,29 @@ describe Epiphy::Repository do
       end
 
       it 'returns first record' do
-        UserRepository.first.must_equal(user1)
+        UserRepository.first(:name).must_equal(user1)
       end
     end
   end
 
-  #describe '.last' do
-    #describe 'without data' do
-      #it 'returns nil' do
-        #UserRepository.last.must_be_nil
-      #end
-    #end
+  describe '.last' do
+    describe 'without data' do
+      it 'returns nil' do
+        UserRepository.last(:name).must_be_nil
+      end
+    end
 
-    #describe 'with data' do
-      #before do
-        #UserRepository.create(user1)
-        #UserRepository.create(user2)
-      #end
+    describe 'with data' do
+      before do
+        UserRepository.create(user1)
+        UserRepository.create(user2)
+      end
 
-      #it 'returns last record' do
-        #UserRepository.last.must_equal(user2)
-      #end
-    #end
-  #end
+      it 'returns last record' do
+        UserRepository.last.must_equal(user2)
+      end
+    end
+  end
 
   describe '.clear' do
     describe 'without data' do

@@ -291,7 +291,8 @@ module Epiphy
       # Creates a record in the database for the given entity.
       # It assigns the `id` attribute, in case of success.
       #
-      # If already persisted (`id` present) it does nothing.
+      # If already persisted (`id` present), it will try to insert use that id
+      # and will raise an error if the `id` is already exist
       #
       # @param entity [#id,#id=] the entity to create
       #
@@ -316,10 +317,16 @@ module Epiphy
       #
       #   ArticleRepository.create(article) # no-op
       def create(entity)
-        unless entity.id
+        #unless entity.id
+        begin
           result = @adapter.create(collection, to_document(entity))
           entity.id = result
+        rescue Epiphy::Model::EntityExisted => e
+          raise e
+        rescue RethinkDB::RqlRuntimeError => e
+          raise Epiphy::Model::RuntimeError, e.message
         end
+        #end
       end
 
       # Updates a record in the database corresponding to the given entity.
@@ -506,8 +513,8 @@ module Epiphy
       #   end
       #
       #   ArticleRepository.first # => nil
-      def first
-        result = @adapter.first(collection)
+      def first(order_by=:id)
+        result = @adapter.first(collection, order_by: order_by)
         if result
           to_entity result
         else
@@ -540,8 +547,12 @@ module Epiphy
       #   end
       #
       #   ArticleRepository.last # => nil
-      def last
-        @adapter.last(collection)
+      def last(order_by=:id)
+        if result = @adapter.last(collection, order_by: order_by)
+          to_entity result
+        else
+          nil
+        end
       end
 
       # Deletes all the records from the current collection.

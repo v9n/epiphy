@@ -126,9 +126,15 @@ module Epiphy
       end
       
       # Insert a document.
+      #
+      # When the ID is already existed, we simply return the ID if insert
+      # succesful. Or, the generated ID will be returned.
+      #
       # @param collection [Symbol the target collection
       # @param entity [#id, #id=] the entity to create
       # @return [Object] the entity 
+      # 
+      # @raise 
       #
       # @api private
       # @since 0.0.1
@@ -137,12 +143,17 @@ module Epiphy
           result = query table: collection do |r|
             r.insert(entity)
           end
-        rescue 
-          return false
+        rescue RethinkDB::RqlRuntimeError => e
+          raise e
         end
         
         if result["inserted"]==1
-          result["generated_keys"].first
+          return entity["id"] if result["generated_keys"].nil?
+          result["generated_keys"].first 
+        else 
+          if result['first_error'].include? 'Duplicate primary key'
+            raise Epiphy::Model::EntityExisted, 'Duplicate primary key'
+          end
         end
       end
 
@@ -280,10 +291,10 @@ module Epiphy
       #
       # @api private
       # @since 0.1.0
-      def first(collection)
+      def first(collection, order_by: nil)
         begin
-          query table: collection do |r|
-            r.nth(0)
+          query table: collection do |q,r|
+            q.order_by(r.asc(order_by)).nth(0)
           end
         rescue RethinkDB::RqlRuntimeError => e
           return nil
@@ -298,10 +309,10 @@ module Epiphy
       #
       # @api private
       # @since 0.1.0
-      def last(collection)
+      def last(collection, order_by: nil)
         begin
-          query table: collection do |r|
-            r.nth(0)
+          query table: collection do |q, r|
+            q.order_by(r.desc(order_by)).nth(0)
           end
         rescue RethinkDB::RqlRuntimeError => e
           return nil

@@ -37,5 +37,9 @@ module Epiphy
     # @see epiphy::Repository.update
     class NonPersistedEntityError < ::StandardError
     end
+
+    class EntityExisted < ::StandardError
+
+    end
   end
 end
