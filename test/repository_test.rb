@@ -280,13 +280,14 @@ describe Epiphy::Repository do
       end
     end
 
-    it 'return a single entity for corresponding query' do
+    #it 'return a single entity for corresponding query' do
+    it 'return an array of Entity' do
       highest_article = Article.new title: 'test', rank: 99999
       second_article  = Article.new title: 'test', rank: 99998
       ArticleRepository.create highest_article
       ArticleRepository.create second_article
       actual = ArticleRepository.highest_rank
-      actual.must_equal highest_article
+      actual.must_equal [highest_article]
     end
 
     #if adapter_name == :sql

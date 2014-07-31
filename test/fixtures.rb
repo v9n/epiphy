@@ -68,9 +68,9 @@ class ArticleRepository
     end
   end
 
-  def highest_rank
-    query do |r|
-      r.order_by(r.desc('rank')).limit(1)
+  def self.highest_rank
+    query do |r, rt|
+      r.order_by(rt.desc('rank')).limit(1)
     end
   end
 
