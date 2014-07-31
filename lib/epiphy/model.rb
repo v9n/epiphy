@@ -9,6 +9,10 @@ module Epiphy
   #
   # @since 0.1.0
   module Model
+
+    class RuntimeError < RethinkDB::RqlRuntimeError
+
+    end
     # Error for not found entity
     #
     # @since 0.1.0

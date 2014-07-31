@@ -265,29 +265,55 @@ describe Epiphy::Repository do
     end
   end
 
-  #describe 'querying' do
-    #before do
-      #UserRepository.create(user1)
-      #ArticleRepository.create(article1)
-      #ArticleRepository.create(article2)
-      #ArticleRepository.create(article3)
-    #end
+  describe 'querying' do
+    before do
+      UserRepository.create(user1)
+      ArticleRepository.create(article1)
+      ArticleRepository.create(article2)
+      ArticleRepository.create(article3)
+    end
 
-    #it 'defines custom finders' do
-      #actual = ArticleRepository.by_user(user1)
-      #actual.all.must_equal [article1, article2]
-    #end
+    it 'defines custom finders' do
+      actual = ArticleRepository.by_user(user1)
+      actual.each do |i|
+        [article1, article2].must_include i
+      end
+    end
 
-    #if adapter_name == :sql
-      #it 'combines queries' do
-        #actual = ArticleRepository.rank_by_user(user1)
-        #actual.all.must_equal [article2, article1]
-      #end
+    #it 'return a single entity for corresponding query' do
+    it 'return an array of Entity' do
+      highest_article = Article.new title: 'test highest', rank: 99999
+      second_article  = Article.new title: 'test second', rank: 99998
+      ArticleRepository.create highest_article
+      ArticleRepository.create second_article
+      actual = ArticleRepository.highest_rank
+      actual.must_equal [highest_article]
+    end
 
-      #it 'negates a query' do
-        #actual = ArticleRepository.not_by_user(user1)
-        #actual.all.must_equal []
-      #end
-    #end
-  #end
+  end
+
+  describe 'find_by' do
+    before do
+      UserRepository.create(user1)
+    end
+
+    it 'find the entity with a field' do
+      actual = UserRepository.find_by(name: user1.name)
+      actual.name.must_equal user1.name  
+    end
+
+  end
+
+  describe 'count' do
+    before do
+      UserRepository.create(user1)
+      UserRepository.create(user2)
+      UserRepository.create(User.new(:age =>25, :name => 'K'))
+    end
+    
+    it 'tell us the collection length' do
+      UserRepository.count.must_equal 3
+    end
+  end
+
 end

@@ -48,7 +48,7 @@ end
 
 class Article
   include Epiphy::Entity
-  self.attributes = :user_id, :unmapped_attribute, :title, :comments_count
+  self.attributes = :user_id, :unmapped_attribute, :title, :comments_count, :rank
 end
 
 class CustomUserRepository
@@ -63,14 +63,20 @@ class ArticleRepository
   include Epiphy::Repository
 
   def self.rank
-    query do
-      desc(:comments_count)
+    query do |r|
+      #r.oreder
+    end
+  end
+
+  def self.highest_rank
+    query do |r, rt|
+      r.order_by(rt.desc('rank')).limit(1)
     end
   end
 
   def self.by_user(user)
-    query do
-      where(user_id: user.id)
+    query do |r|
+      r.filter({user_id: user.id})
     end
   end
 

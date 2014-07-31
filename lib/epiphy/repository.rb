@@ -1,6 +1,7 @@
 require 'lotus/utils/class_attribute'
 require 'epiphy/repository/configuration'
 require 'epiphy/repository/cursor'
+require 'epiphy/repository/helper'
 
 module Epiphy
   # Mediates between the entities and the persistence layer, by offering an API
@@ -215,6 +216,7 @@ module Epiphy
     end
 
     module ClassMethods
+      include Epiphy::Repository::Helper
       # Assigns an adapter.
       #
       # Epiphy::Repository is shipped with an adapters:
@@ -553,22 +555,16 @@ module Epiphy
       #   ArticleRepository.clear # deletes all the records
       def clear
         @adapter.clear(collection)
-      end
+      end 
 
-      # Create a collection storage in database.
+      # Count the entity in this collection
       #
-      def create_collection
-        query do |r|
-          r.table_create(self.collection)
-        end
-      end
-
-      # Drop a collection storage in database
-      #
-      def drop_collection
-        query do |r|
-          r.table_drop(self.collection)
-        end
+      # @param void
+      # @return Interget 
+      # @api public
+      # @since 0.2.0
+      def count
+        @adapter.count(collection)
       end
 
       private
@@ -585,27 +581,34 @@ module Epiphy
       # The returned query SHOULD refer to the entire collection by default.
       #
       # Queries can be reused and combined together. See the example below.
-      # IMPORTANT: This feature works only with the Sql adapter.
       #
       # A repository is storage independent.
       # All the queries are delegated to the current adapter, which is
       # responsible to implement a querying API.
       #
-      # Epiphy::Model is shipped with two adapters:
+      # Epiphy::Model is shipped with adapter:
       #
-      #   * SqlAdapter, which yields a Epiphy::Model::Adapters::Sql::Query
-      #   * MemoryAdapter, which yields a Epiphy::Model::Adapters::Memory::Query
+      #   * RethinkDB: which yields a RethinkDB::ReQL class.
       #
+      # By default, all return items will be convert into its entity. The
+      # behavious can change by alter `to_entity` parameter 
+      #
+      # @param to_entity [Boolean][Optional] to convert the result back to a
+      # entity class or not. 
+      #       
       # @param blk [Proc] a block of code that is executed in the context of a
-      #   query
-      #
+      #   query.
+      #   The block will be passed two parameters. First parameter is the `reql`
+      #   which is building. the second parameter is th `r` top name space of
+      #   RethinkDB. By doing this, Repository doesn't have to include
+      #   RethinkDB::Shortcuts
+      # 
       # @return a query, the type depends on the current adapter
       #
       # @api public
       # @since 0.1.0
       #
-      # @see Epiphy::Model::Adapters::Sql::Query
-      # @see Epiphy::Model::Adapters::Memory::Query
+      # @see Epiphy::Adapters::Rethinkdb
       #
       # @example
       #   require 'epiphy/model'
@@ -646,9 +649,27 @@ module Epiphy
       #       query.average(:comments_count)
       #     end
       #   end
-      def query(&blk)
-        @adapter.query(collection, self, &blk)
+      def query(to_entity: true, &blk)
+        result = @adapter.query(table: collection, &blk)
+        require 'pp'
+        if result.is_a? RethinkDB::Cursor
+          return Epiphy::Repository::Cursor.new result do |item|
+            to_entity(item)
+          end
+        end
+
+        if result.is_a? Array
+          result.map! do |item|
+            to_entity(item)
+          end
+        end
+
+        if result.is_a? Hash
+          return to_entity(result)
+        end
+        result
       end
+      
 
       # Negates the filtering conditions of a given query with the logical
       # opposite operator.
