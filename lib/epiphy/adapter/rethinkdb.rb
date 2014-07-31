@@ -282,11 +282,11 @@ module Epiphy
       # @since 0.1.0
       def first(collection)
         begin
-          result = query table: collection do |r|
+          query table: collection do |r|
             r.nth(0)
           end
         rescue RethinkDB::RqlRuntimeError => e
-          raise Epiphy::Model::RuntimeError, e.message
+          return nil
         end
       end
 
@@ -300,12 +300,13 @@ module Epiphy
       # @since 0.1.0
       def last(collection)
         begin
-          result = query table: collection do |r|
+          query table: collection do |r|
             r.nth(0)
           end
         rescue RethinkDB::RqlRuntimeError => e
-          raise Epiphy::Model::RuntimeError, e.message
+          return nil
         end
+ 
       end
 
       private
