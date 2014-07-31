@@ -205,6 +205,10 @@ module Epiphy
     def self.included(base)
       #config = self.get_config
       config = Epiphy::Repository.get_config
+      
+      raise Epiphy::Repository::NotConfigureError if config.nil?
+      raise Epiphy::Repository::MissingAdapterError if config.adapter.nil?
+
       base.class_eval do
         extend ClassMethods
         include Lotus::Utils::ClassAttribute

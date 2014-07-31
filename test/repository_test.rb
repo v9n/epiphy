@@ -18,6 +18,18 @@ describe Epiphy::Repository do
     ArticleRepository.clear
   end
 
+  describe 'configuration' do
+    it 'raise error if it has not configured yet' do
+
+
+    end
+    
+    it 'raise error if configured, but not assign adapter' do
+
+    end
+  end
+
+
   describe '.collection' do
     it 'returns the collection name' do
       UserRepository.collection.must_equal    :users

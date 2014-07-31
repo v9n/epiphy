@@ -5,11 +5,12 @@ require 'epiphy/adapter/rethinkdb'
 require 'epiphy/repository'
 
 module Epiphy
+
+  
   # Model
   #
   # @since 0.1.0
   module Model
-
     class RuntimeError < RethinkDB::RqlRuntimeError
 
     end
