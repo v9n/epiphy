@@ -172,7 +172,7 @@ module Epiphy
       # worry about setting up and configure.
       # @since 0.3.0
       # @api private 
-      private def auto_config
+      def auto_config
         Epiphy::Repository.configure do |config|
           config.adapter = Epiphy::Adapter::Rethinkdb.new connection, database: 'test'
         end
