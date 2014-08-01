@@ -6,7 +6,7 @@ module Epiphy
     #
     module Timestamp
       def self.included(base)
-        base.send :attr_accessor, :_ts
+        base.send :attr_accessor, :created_at
       end
     end
 

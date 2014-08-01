@@ -320,24 +320,6 @@ module Epiphy
  
       end
 
-      private
-      def _find(collection, id)
-        identity = _identity(collection)
-        query(collection).where(identity => _id(collection, identity, id))
-      end
-
-      def _first(query)
-        query.limit(1).first
-      end
-
-      def _identity(collection)
-        _mapped_collection(collection).identity
-      end
-
-      def _id(collection, column, value)
-        _mapped_collection(collection).deserialize_attribute(column, value)
-      end
-
       protected
 
       # Return a ReQL wrapper of a table to start query chaining.

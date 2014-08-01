@@ -18,18 +18,6 @@ describe Epiphy::Repository do
     ArticleRepository.clear
   end
 
-  describe 'configuration' do
-    it 'raise error if it has not configured yet' do
-
-
-    end
-    
-    it 'raise error if configured, but not assign adapter' do
-
-    end
-  end
-
-
   describe '.collection' do
     it 'returns the collection name' do
       UserRepository.collection.must_equal    :users
@@ -129,6 +117,8 @@ describe Epiphy::Repository do
   describe '.delete' do
     before do
       UserRepository.create(user)
+      UserRepository.create(user1)
+      UserRepository.create(user2)
       UserRepository.delete(user)
     end
 
@@ -139,9 +129,15 @@ describe Epiphy::Repository do
       UserRepository.all.to_a.wont_include(user)
     end
 
-    it 'raises error when the given entity is not persisted' do
-      -> { UserRepository.delete(user2) }.must_raise(Epiphy::Model::NonPersistedEntityError)
+    it 'only remove the requested entity' do
+      UserRepository.find(user1.id).must_equal user1
+      UserRepository.find(user2.id).must_equal user2
     end
+
+    it 'raises error when the given entity is not persisted' do
+      -> { UserRepository.delete(user3) }.must_raise(Epiphy::Model::NonPersistedEntityError)
+    end
+
   end
 
   describe '.all' do
@@ -205,6 +201,10 @@ describe Epiphy::Repository do
         UserRepository.find(user1.id).must_equal(user1)
       end
 
+      it 'won not accept an entity' do
+        ->{ UserRepository.find(user1)}.must_raise TypeError
+      end
+
       it 'accepts a string as argument' do
         UserRepository.find(user2.id.to_s).must_equal(user2)
       end
@@ -246,7 +246,7 @@ describe Epiphy::Repository do
   describe '.last' do
     describe 'without data' do
       it 'returns nil' do
-        UserRepository.last("name").must_be_nil
+        UserRepository.last(:name).must_be_nil
       end
     end
 
@@ -257,7 +257,7 @@ describe Epiphy::Repository do
       end
 
       it 'returns last record' do
-        UserRepository.last.must_equal(user2)
+        UserRepository.last(:name).must_equal(user2)
       end
     end
   end

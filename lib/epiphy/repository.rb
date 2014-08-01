@@ -66,11 +66,9 @@ module Epiphy
   #
   #   * Isolates the persistence logic at a low level
   #
-  # Epiphy::Model is shipped with two adapters:
+  # Epiphy::Model is shipped with adapter:
   #
-  #   * SqlAdapter
-  #   * MemoryAdapter
-  #
+  #   * RethinkDB
   #
   #
   # All the queries and commands are private.
@@ -161,7 +159,23 @@ module Epiphy
       end
 
       def get_config
+        if @config.nil?
+          auto_config
+        end
         @config
+      end
+      
+      # Auto configure with default RethinkDB setting. 127.0.0.1, 28015, plain
+      # auth key.
+      #
+      # With this design, people can just drop in and start using it without
+      # worry about setting up and configure.
+      # @since 0.3.0
+      # @api private 
+      private def auto_config
+        Epiphy::Repository.configure do |config|
+          config.adapter = Epiphy::Adapter::Rethinkdb.new connection, database: 'test'
+        end
       end
     end
 
@@ -203,7 +217,6 @@ module Epiphy
     #   FilmRepository.collection = 'Movie'
     #
     def self.included(base)
-      #config = self.get_config
       config = Epiphy::Repository.get_config
       
       raise Epiphy::Repository::NotConfigureError if config.nil?
@@ -479,6 +492,10 @@ module Epiphy
       #   ArticleRepository.find(9) # => raises Epiphy::Model::EntityNotFound
       def find(id)
         entity_id = id
+        if id.is_a? Epiphy::Entity
+          raise TypeError, "Expecting an string, primitve value"
+        end
+
         if !id.is_a? String
           raise Epiphy::Model::EntityIdNotFound, "Missing entity id" if !id.respond_to?(:to_s)
           entity_id = id.to_s
@@ -690,41 +707,6 @@ module Epiphy
         result
       end
       
-
-      # Negates the filtering conditions of a given query with the logical
-      # opposite operator.
-      #
-      # This is only supported by the SqlAdapter.
-      #
-      # @param query [Object] a query
-      #
-      # @return a negated query, the type depends on the current adapter
-      #
-      # @api public
-      # @since 0.1.0
-      #
-      # @see Epiphy::Model::Adapters::Sql::Query#negate!
-      #
-      # @example
-      #   require 'epiphy/model'
-      #
-      #   class ProjectRepository
-      #     include Epiphy::Repository
-      #
-      #     def self.cool
-      #       query do
-      #         where(language: 'ruby')
-      #       end
-      #     end
-      #
-      #     def self.not_cool
-      #       exclude cool
-      #     end
-      #   end
-      def exclude(query)
-        query.negate!
-        query
-      end
 
       # Determine colleciton/table name of this repository. Note that the
       # repository name has to be the model name, appending Repository

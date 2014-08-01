@@ -1,5 +1,9 @@
 module Epiphy
   module Repository
+    # Give repository useful helper class to query data.
+    # Only support `find_by` at this moment.
+    #
+    #
     module Helper
 
       # Find the first record matching the 
@@ -21,7 +25,6 @@ module Epiphy
         end
       end
       
-      #private :where, :desc#, :exlude
     end
   end
 end
