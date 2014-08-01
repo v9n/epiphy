@@ -1,13 +1,16 @@
-# Epiphy [![wercker status](https://app.wercker.com/status/63dd458158948712a03a00d69a96f67b/m "wercker status")](https://app.wercker.com/project/bykey/63dd458158948712a03a00d69a96f67b)
+# Epiphy 
 
-## [Simply RethinkDB](http://leanpub.com/simplyrethink)
+A persistence framework for [RethinkDB](http://rethinkdb.com). The library is used on [phim365.today](http://phim365.today). Its API is based on Lotus::Model.
+
+# Status
+
+[![wercker status](https://app.wercker.com/status/63dd458158948712a03a00d69a96f67b/m "wercker status")](https://app.wercker.com/project/bykey/63dd458158948712a03a00d69a96f67b)
+
+# Book [Simply RethinkDB](http://leanpub.com/simplyrethink)
 
 I also write this book to practice RethinkDB. Please consider buying a
 copy if you want to support the author.
 
-# Introduction
-
-A persistence framework for [RethinkDB](http://rethinkdb.com). The library is used on [phim365.today](http://phim365.today). Its API is based on Lotus::Model.
 
 I love Lotus::Model so much because it's lightweight, does the job, no
 magic. I also should fork Lotus and add RethinkDB adapter. However, I want
@@ -59,7 +62,19 @@ A testing database will be created during the testing. The testing data
 will hit your RethinkDB. Depend on your storge system, test can fast or
 slow.
 
-# Example
+# Usage
+
+Entities
+
+An object that is defined by its identity.
+
+An entity is the core of an application, where the part of the domain logic is implemented. It's a small, cohesive object that expresses coherent and meaningful behaviors.
+
+It deals with one and only one responsibility that is pertinent to the domain of the application, without caring about details such as persistence or validations.
+
+This simplicity of design allows developers to focus on behaviors, or message passing if you will, which is the quintessence of Object Oriented Programming.
+
+# Usage
 
 ```ruby
 connection = Epiphy::Connection.create
@@ -88,9 +103,6 @@ movie = Movie.new
 movie.title = "A movie"
 MovieRepository.create movie
 MovieRepository.update movie
-
-
-
 ```
 
 # Contributing to epiphy
