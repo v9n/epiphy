@@ -51,6 +51,11 @@ class Article
   self.attributes = :user_id, :unmapped_attribute, :title, :comments_count, :rank
 end
 
+class Movie
+  include Epiphy::Entity
+  self.attributes = :title, :url, :type
+end
+
 class CustomUserRepository
   include Epiphy::Repository
 end

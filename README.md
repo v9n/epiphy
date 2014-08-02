@@ -1,6 +1,8 @@
 # Epiphy 
 
-A persistence framework for [RethinkDB](http://rethinkdb.com). The library is used on [phim365.today](http://phim365.today). Its API is based on Lotus::Model.
+A persistence framework for [RethinkDB](http://rethinkdb.com). The library is used on [phim365.today](http://phim365.today). Its API is inspired by Lotus::Model.
+
+`Epiphy` is name after `Epiphyllum`, my wife's name.
 
 # Status
 
@@ -18,8 +20,21 @@ to learn more Ruby and reinvent the wheel because I didn't know how the
 wheel was created. More than that, my bad code will not be able to make
 it to Lotus::Model.
 
-It delivers a convenient public API to execute queries and commands against a database.
-The architecture eases keeping the business logic (entities) separated from details such as persistence or validations.
+# Philosophy
+
+Does basic thing well and leave complex query to RethinkDB.
+
+RethinkDB query is very good. By wrapping an ORM around it, we can
+destroy the joy of using ReQL. I only want to do basic thing with
+RethinkDB, the complex query should be done use ReQL. The result of
+query is converted back to an entity of an array of entity when
+possible.
+
+# API 
+
+RethinkDB  delivers a convenient public API to execute queries and commands
+against a database. The architecture eases keeping the business logic 
+(entities) separated from details such as persistence or validations.
 
 It implements the following concepts:
 
@@ -27,8 +42,6 @@ It implements the following concepts:
   * [Repository](#repositories) - An object that mediates between the entities and the persistence layer.
   * [Adapter](#adapter) – A database adapter.
   * [Query](#query) - An object that represents a database query.
-
-`Epiphy` is name after `Epiphyllum`, my spouse's name.
 
 # Install
 
@@ -59,7 +72,7 @@ $ rake test
 ```
 
 A testing database will be created during the testing. The testing data
-will hit your RethinkDB. Depend on your storge system, test can fast or
+will hit your RethinkDB. Depend on your storge system, test can be fast or
 slow.
 
 # Usage
@@ -76,33 +89,55 @@ This simplicity of design allows developers to focus on behaviors, or message pa
 
 # Usage
 
+## Setup
+
 ```ruby
 connection = Epiphy::Connection.create
 adapter    = Epiphy::Adapter::RethinkDB.new connection
 RethinkDB::Repository.configure do |r|
   r.adapter = adapter 
 end
+```
 
+## Define your entity
+
+```ruby
 class Movie
   include Epiphy::Entity
-  include Epiphy::Entity::Timestamp
 
-  attributes :title, :url
+  self.attributes= :title, :url, :type
 end
+```
 
+## Define your repository
+
+```ruby
 class MovieRepository
   include Epiphy::Repository  
 end
+```
+
+## Query 
+
+```ruby
 
 movie = MovieRepository.find id # Find by id
 
-movie = MovieRepository.first
-movie = MovieRepository.last
+movie = MovieRepository.first :created_at # Find first entity, order by field :date
+movie = MovieRepository.last :created_at  # Find first entity, order by field :date
 
 movie = Movie.new
 movie.title = "A movie"
 MovieRepository.create movie
+puts movie.id # return the ID of inserted movie
+
+movie.title = "A new title"
 MovieRepository.update movie
+
+movie = Movie.new title: 'Another one', url: "http://youtube.com/foo", type: 'anime'
+movie.id = Time.now.to_i #Manually assign an id
+MovieRepository.persist movie
+
 ```
 
 # Contributing to epiphy
