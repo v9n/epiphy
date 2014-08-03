@@ -9,7 +9,11 @@ describe Epiphy::Repository do
   let(:article1) { Article.new(user_id: user1.id, title: 'Introducing Epiphy::Model', comments_count: '23') }
   let(:article2) { Article.new(user_id: user1.id, title: 'Thread safety',            comments_count: '42') }
   let(:article3) { Article.new(user_id: user2.id, title: 'Love Relationships',       comments_count: '4') }
-  
+
+  let(:movie1) { Movie.new(id: Time.now.to_i, title: 'Natsume', url: 'kissanime')} 
+  let(:movie2) { Movie.new(title: 'The girl who leaps through time', url: 'youtube')} 
+  let(:movie3) { Movie.new(id: '3456890990876', title: 'Laputa: Flying castle', url: 'youtube')} 
+
   before do
     UserRepository.collection    = :users
     #ArticleRepository.collection = :articles
@@ -63,9 +67,11 @@ describe Epiphy::Repository do
   describe '.create' do
     before do
       # Cleanup
-      #UserRepository.clear
+      UserRepository.clear
       UserRepository.create(user1)
       UserRepository.create(user2)
+      MovieRepository.clear
+      MovieRepository.create movie1
     end
 
     it 'persist entities' do
@@ -87,11 +93,8 @@ describe Epiphy::Repository do
     end
 
     it 'create an object with id and custom table name' do
-      movie = Movie.new title: 'Another one', url: "http://youtube.com/foo", type: 'anime'
-      movie.id = Time.now.to_i #Manually assign an id
-      MovieRepository.create movie
-      movie_test = MovieRepository.find movie.id
-      movie_test.must_equal movie
+      movie_test = MovieRepository.find movie1.id
+      movie_test.must_equal movie1
     end
 
     it 'raise an error if the entity existed' do
@@ -189,16 +192,23 @@ describe Epiphy::Repository do
 
     describe 'with data' do
       before do
-        TestPrimaryKey = Struct.new(:id) do
-          def to_s
-            id
+        TestPrimaryKey = Struct.new(:entity_id) do
+          def id
+            entity_id
           end
+        end
+        class AClassCannotForce
         end
 
         UserRepository.create(user1)
         UserRepository.create(user2)
 
         ArticleRepository.create(article1)
+        
+        MovieRepository.clear
+        MovieRepository.create movie1 
+        MovieRepository.create movie2 
+        MovieRepository.create movie3 
       end
 
       after do
@@ -217,9 +227,13 @@ describe Epiphy::Repository do
         UserRepository.find(user2.id.to_s).must_equal(user2)
       end
 
-      it 'accepts an object that can be force to a String' do
+      it 'accepts an object that responds to `id`' do
         id = TestPrimaryKey.new(user2.id)
         UserRepository.find(id).must_equal(user2)
+      end
+
+      it 'won accept an object that is not respond to `id`' do
+        -> {MovieRepository.find AClassCannotForce.new}.must_raise Epiphy::Model::EntityIdNotFound
       end
 
       #it "doesn't assign a value to unmapped attributes" do
@@ -229,6 +243,13 @@ describe Epiphy::Repository do
       it "raises error when the given id isn't associated with any entity" do
         -> { UserRepository.find(1_000_000) }.must_raise(Epiphy::Model::EntityNotFound)
       end
+
+      it 'find the entity with different data type of id' do
+        actual = MovieRepository.find(movie3.id)
+        actual.must_equal movie3
+        -> { MovieRepository.find(movie3.id.to_i) }.must_raise Epiphy::Model::EntityNotFound
+      end
+
     end
   end
 

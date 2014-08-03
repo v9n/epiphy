@@ -491,18 +491,18 @@ module Epiphy
       #
       #   ArticleRepository.find(9) # => raises Epiphy::Model::EntityNotFound
       def find(id)
-        entity_id = id
+        entity_id = nil
         if id.is_a? Epiphy::Entity
           raise TypeError, "Expecting an string, primitve value"
         end
 
-        if !id.is_a? String
-          raise Epiphy::Model::EntityIdNotFound, "Missing entity id" if !id.respond_to?(:to_s)
-          entity_id = id.to_s
+        if id.is_a?(String) || id.is_a?(Integer)
+          entity_id = id
+        else
+          entity_id = id.id if id.respond_to? :id
         end
-        #if !id.is_a? String
-          #entity_id = id.to_i
-        #end
+
+        raise Epiphy::Model::EntityIdNotFound, "Missing entity id" if entity_id.nil?
         result = @adapter.find(collection, entity_id).tap do |record|
           raise Epiphy::Model::EntityNotFound.new unless record
         end

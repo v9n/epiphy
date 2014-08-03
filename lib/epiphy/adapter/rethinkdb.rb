@@ -231,9 +231,9 @@ module Epiphy
       # @since 0.1.0
       def find(collection, id)
         #begin
-          result = query table: collection do |r|
-            r.get(id)
-          end
+        result = query table: collection do |r|
+          r.get(id)
+        end
         #rescue
         #end
         result
