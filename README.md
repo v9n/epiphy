@@ -136,8 +136,24 @@ MovieRepository.update movie
 
 movie = Movie.new title: 'Another one', url: "http://youtube.com/foo", type: 'anime'
 movie.id = Time.now.to_i #Manually assign an id
-MovieRepository.persist movie
+MovieRepository.create movie
 
+```
+
+## Custom query
+
+From inside a Repository, we can call `query` method and pass in a
+block. The method expose two object
+  
+  * Current ReQL command to play
+  * Global top name space `r`
+
+```ruby
+class MovieRepository
+  
+  def lop
+  end
+end
 ```
 
 # Contributing to epiphy
