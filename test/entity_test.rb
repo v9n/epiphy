@@ -1,5 +1,4 @@
 require 'helper'
-
 describe Epiphy::Entity do
   before do
     class Car
@@ -55,6 +54,23 @@ describe Epiphy::Entity do
 
         book.instance_variable_get(:@title).must_equal  'Refactoring'
         book.instance_variable_get(:@author).must_equal 'Martin Fowler'
+      end
+    end
+
+    describe 'with a hash' do
+      let (:hash1) { {:title => 'Da tinh kiem khach vo tinh kiem', :author => 'Co Long'} }
+      let (:hash2) { {:title => 'Ba Vuong Thuong', :author => 'Co Long', :review => 'kurei'} }
+
+      it 'accepts given hash' do
+        book = Book.new hash1
+        book.title.must_equal hash1[:title]
+        pp book
+        book.instance_variable_get(:@author).must_equal hash1[:author]
+      end
+      
+      it 'ignore unknow attributes' do
+        book = Book.new hash2
+        book.instance_variable_get(:@review).must_be_nil
       end
     end
 

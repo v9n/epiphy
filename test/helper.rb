@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'bundler'
+require 'pp'
 
 begin
   Bundler.setup(:default, :development)
