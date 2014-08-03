@@ -86,10 +86,10 @@ describe Epiphy::Repository do
       user1.id.must_equal id
     end
 
-    it 'create an object with id and other attb' do
+    it 'create an object with id and custom table name' do
       movie = Movie.new title: 'Another one', url: "http://youtube.com/foo", type: 'anime'
       movie.id = Time.now.to_i #Manually assign an id
-      MovieRepository.persist movie
+      MovieRepository.create movie
       movie_test = MovieRepository.find movie.id
       movie_test.must_equal movie
     end

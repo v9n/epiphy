@@ -33,7 +33,7 @@ end
 
 # Create testing table
 # @TODO consider use table create for testing 
-[:users, :article, :customuser, :user, :movie].each do |t|
+[:users, :article, :customuser, :user, :movie, :film].each do |t|
   r.db(RETHINKDB_DB_TEST).table_create(t).run connection
 end
 
