@@ -60,17 +60,26 @@ describe Epiphy::Entity do
     describe 'with a hash' do
       let (:hash1) { {:title => 'Da tinh kiem khach vo tinh kiem', :author => 'Co Long'} }
       let (:hash2) { {:title => 'Ba Vuong Thuong', :author => 'Co Long', :review => 'kurei'} }
+      let (:hash3) { {'title' => 'Da Tinh Hoan', 'author' => 'Co Long', 'review' => 'kurei'} }
 
       it 'accepts given hash' do
         book = Book.new hash1
         book.title.must_equal hash1[:title]
-        pp book
         book.instance_variable_get(:@author).must_equal hash1[:author]
       end
       
       it 'ignore unknow attributes' do
         book = Book.new hash2
         book.instance_variable_get(:@review).must_be_nil
+      end
+
+      it 'accepts hash with key as string(not symbol)' do
+        puts 'test accept hash with key as string'
+        book = Book.new(hash3)
+        pp hash3
+        pp book
+        book.author.must_equal 'Co Long'
+        puts 'end'
       end
     end
 
