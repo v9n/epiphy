@@ -107,10 +107,12 @@ module Epiphy
 
         class_eval %{
           def initialize(attributes = {})
-        #{ @attributes.map {|a| "@#{a}" }.join(', ') }, = *attributes.values_at(#{ @attributes.map {|a| ":#{a}"}.join(', ') })
+            attributes.keys.each do |key|
+              attributes[(key.to_sym rescue key) || key] = attributes.delete(key)
+            end
+            #{ @attributes.map {|a| "@#{a}" }.join(', ') }, = *attributes.values_at(#{ @attributes.map {|a| ":#{a}"}.join(', ') })
           end
         }
-
         attr_accessor *@attributes
       end
 
@@ -131,16 +133,11 @@ module Epiphy
     #
     # @see .attributes
     def initialize(attributes = {})
-      puts "Passing attrb"
-      pp attributes
-      puts "End deug"
       attributes.each do |k, v|
-        puts "Key class= #{k.class}. value= #{v}"
         case k
           when Symbol
             public_send("#{ k }=", v)
           when String
-            puts k
             public_send("#{ k.to_sym }=", v)
         end
       end
