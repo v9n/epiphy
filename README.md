@@ -8,7 +8,7 @@ A persistence framework for [RethinkDB](http://rethinkdb.com). The library is us
 
 [![wercker status](https://app.wercker.com/status/63dd458158948712a03a00d69a96f67b/m "wercker status")](https://app.wercker.com/project/bykey/63dd458158948712a03a00d69a96f67b)
 
-# Book [Simply RethinkDB](http://leanpub.com/simplyrethink)
+# Book [Simply RethinkDB](http://leanpub.com/simplyrethinkdb)
 
 I also write this book to practice RethinkDB. Please consider buying a
 copy if you want to support the author.
@@ -77,7 +77,10 @@ slow.
 
 # Usage
 
-Entities
+Checkout [Examples.md](blob/master/EXAMPLE.md) for detail guide and [examples](tree/master/examples) folder for real
+code.
+
+## Entities
 
 An object that is defined by its identity.
 
@@ -87,7 +90,6 @@ It deals with one and only one responsibility that is pertinent to the domain of
 
 This simplicity of design allows developers to focus on behaviors, or message passing if you will, which is the quintessence of Object Oriented Programming.
 
-# Usage
 
 ## Setup
 
