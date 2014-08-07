@@ -61,6 +61,7 @@ describe Epiphy::Entity do
       let (:hash1) { {:title => 'Da tinh kiem khach vo tinh kiem', :author => 'Co Long'} }
       let (:hash2) { {:title => 'Ba Vuong Thuong', :author => 'Co Long', :review => 'kurei'} }
       let (:hash3) { {'title' => 'Da Tinh Hoan', 'author' => 'Co Long', 'review' => 'kurei'} }
+      let (:hash4) { {:title => 'Da Tinh Hoan', 'author' => 'Co Long', 'review' => 'kurei'} }
 
       it 'accepts given hash' do
         book = Book.new hash1
@@ -74,12 +75,14 @@ describe Epiphy::Entity do
       end
 
       it 'accepts hash with key as string(not symbol)' do
-        puts 'test accept hash with key as string'
         book = Book.new(hash3)
-        pp hash3
-        pp book
         book.author.must_equal 'Co Long'
-        puts 'end'
+      end
+      
+      it 'accepts hash with mixed string and symbol key' do
+        book = Book.new(hash4)
+        book.author.must_equal 'Co Long'
+        book.title.must_equal hash4[:title]
       end
     end
 
