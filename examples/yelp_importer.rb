@@ -24,13 +24,20 @@ class BusinessRepository
   include Epiphy::Repository
 end
 require 'pp'
+
+# Clear old data
+BusinessRepository.clear
+
+# Inserting
+count = 0
 IO.foreach('/Volumes/MiscData/yelp/yelp_academic_dataset_business.json') do |line|
+  count += 1
+  puts count
   hash = JSON.parse line
-  pp hash
   business = Business.new hash
   business.id = hash[:business_id]
-  pp business
+  #pp business
   #business.business_id = nil
-  #BusinessRepository.create business
+  BusinessRepository.create business
 end
 
